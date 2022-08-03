@@ -1,12 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import EventListView from '../views/EventListView.vue'
 import AboutView from '../views/AboutView.vue'
-import EventDetailView from '@/views/event/EventDetailView.vue'
-import EventRegisterView from '@/views/event/EventRegister.vue'
-import EventEditView from '@/views/event/EventEditView.vue'
-import EventLayoutView from '@/views/event/EventLayoutView.vue'
+import EventDetails from '@/views/event/EventDetailView.vue'
+import EventRegister from '@/views/event/EventRegister.vue'
+import EventEdit from '@/views/event/EventEditView.vue'
+import Eventlayout from '@/views/event/EventLayoutView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import NetWorkError from '@/views/NetworkErrorView.vue'
+import EventAirlineDetail from '@/views/event/EventAirlineDetail.vue'
+
 const routes = [
   {
     path: '/',
@@ -14,7 +16,7 @@ const routes = [
     component: EventListView,
     props: (route) => ({
       page: parseInt(route.query.page) || 1,
-      perPage: parseInt(route.query.perPage) || 3
+      morepage: parseInt(route.query.morepage) || 5
     })
   },
   {
@@ -26,26 +28,29 @@ const routes = [
     path: '/event/:id',
     name: 'EventLayout',
     props: true,
-    component: EventLayoutView,
+    component: Eventlayout,
     children: [
       {
         path: '',
         name: 'EventDetails',
-        component: EventDetailView,
-        props: true
+        component: EventDetails
       },
-
+      {
+        path: 'airlineDetails',
+        name: 'EventAirlineDetail',
+        component: EventAirlineDetail
+      },
       {
         path: 'register',
         name: 'EventRegister',
-        component: EventRegisterView,
-        props: true
+        props: true,
+        component: EventRegister
       },
       {
         path: 'edit',
         name: 'EventEdit',
-        component: EventEditView,
-        props: true
+        props: true,
+        component: EventEdit
       }
     ]
   },
@@ -65,6 +70,18 @@ const routes = [
     path: '/network-error',
     name: 'NetworkError',
     component: NetWorkError
+  },
+  {
+    path: '/event/:id/register',
+    name: 'EventRegister',
+    props: true,
+    component: EventRegister
+  },
+  {
+    path: '/event/:id/edit',
+    name: 'EventEdit',
+    props: true,
+    component: EventEdit
   }
 ]
 

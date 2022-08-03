@@ -1,7 +1,11 @@
 <template>
   <h1>Events For Good</h1>
   <div class="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
+    <EventCard
+      v-for="event in events"
+      :key="event.id"
+      :event="event"
+    ></EventCard>
     <div class="pagination">
       <router-link
         id="page-prev"
@@ -21,57 +25,59 @@
         Next Page</router-link
       >
     </div>
+    <router-link :to="{ name: 'EventList', query: { morepage: morepage + 1 } }">
+      Add data</router-link
+    >
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import EventCard from '@/components/EventCard.vue'
-import EventService from '@/services/EventService.js'
-import { watchEffect } from '@vue/runtime-core'
-
+import EventCard from "@/components/EventCard.vue";
+import EventService from "@/services/EventService.js";
+import { watchEffect } from "@vue/runtime-core";
 export default {
-  name: 'EventListView',
+  name: "EventListView",
   props: {
     page: {
       type: Number,
-      required: true
+      required: true,
     },
-    perPage: {
+    morepage: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   components: {
-    EventCard
+    EventCard,
   },
   data() {
     return {
       events: null,
-      totalEvents: 0
-    }
+      totalEvents: 0, // <--- Added this to store totalEvents
+    };
   },
   created() {
     watchEffect(() => {
-      EventService.getEvents(this.perPage, this.page)
+      EventService.getEvents(this.morepage, this.page)
         .then((response) => {
-          this.events = response.data
-          this.totalEvents = response.headers['x-total-count'] // <--- Store it
+          this.events = response.data;
+          this.totalEvents = response.headers["x-total-count"]; // <--- Store it
         })
         .catch((error) => {
-          console.log(error)
-        })
-    })
+          console.log(error);
+        });
+    });
   },
   computed: {
     hasNextPage() {
       //First, calculate total pages
-      let totalPages = Math.ceil(this.totalEvents / this.perPage) // 2 is events per pages.
+      let totalPages = Math.ceil(this.totalEvents / 2); // 2 is events per pages.
       //Then check to see if the current page is less than the total pages.
-      return this.page < totalPages
-    }
-  }
-}
+      return this.page < totalPages;
+    },
+  },
+};
 </script>
 <style scoped>
 .events {
